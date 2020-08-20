@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义播放器</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        a{
+            text-decoration: none;
+        }
+        h2{
+            text-align: center;
+            margin: 10px 0;
+        }
+        .player{
+            background-color: mediumpurple;
+            width: 600px;
+            margin: 5px auto;
+        }
+        .player>video{
+            width: 100%;
+            display: block;
+        }
+        .player>.control{
+            display: flex;
+            color: #ffffff;
+            flex-direction: row;
+            line-height: 1.5em;
+        }
+        .player>.control>a{
+            width: 1.5em;
+            color: #ffffff;
+            text-align: center;
+            /*background-color: coral;*/
+            /*border: white 1px solid;*/
+            margin: 2px 0;
+        }
+        .player>.control>.playPauseBtn,
+        .player>.control>.expandBtn,
+        .player>.control>.volumeBtn{
+            margin-top: 3px;
+        }
+        .player>.control>.progress{
+            width: 70%;
+            position: relative;
+            /*background-color: coral;*/
+            margin-right: 10px;
+        }
+        .player>.control>.progress>div{
+            height: 5px;
+            position: absolute;
+            top: 40%;
+        }
+        .player>.control>.progress>.bar{
+            background-color: #fff;
+            opacity: 40%;
+            cursor: pointer;
+            width: 100%;
+            /*z-index: 1;*/
+        }
+        /*.player>.control>.progress>.bar::before{*/
+        /*    content:"";*/
+        /*    position: absolute;*/
+        /*    top: -5px;*/
+        /*    left: 0;*/
+        /*    width: 16px;*/
+        /*    height: 16px;*/
+        /*    opacity:1;*/
+        /*    background-color: coral;*/
+        /*    z-index: 999;*/
+        /*}*/
+        .player>.control>.progress>.loaded{
+            background-color: #fff;
+            width: 50%;
+            opacity: 60%;
+        }
+        .player>.control>.progress>.elapse{
+            background-color: rgb(255, 101, 178);
+            /* background-color: red; */
+            width: 0%;
+        }
+    </style>
+</head>
+<body>
+<h2>视频播放器</h2>
+<div class="player">
+    <video src="video/1564564948396.mp4"></video>
+    <div class="control">
+        <a href="javascript:;" class="playPauseBtn fa fa-play"></a>
+        <!-- <a href="javascript:;" class="playBtn fa fa-play"></a> -->
+        <!-- <a href="javascript:;" class="pauseBtn fa fa-pause"></a> -->
+        <div class="progress">
+            <div class="loaded"></div>
+            <div class="elapse"></div>
+            <div class="bar"></div>
+        </div>
+        <span class="currentTime">00:00:00</span>/<span class="totalTime">00:00:00</span>
+        <a href="javascript:;" class="expandBtn fa fa-arrows-alt"></a>
+        <a href="javascript:;" class="volumeBtn fa fa-volume-up"></a>
+    </div>
+</div>
+<script src="jquery-3.4.1.js"></script>
+<script>
+$(function(){
+    let video = $(".player>video").get(0);
+
+    // $(".playBtn").on("click",function(){
+    //     $(this).css("display","none")
+    //     $(".pauseBtn").css("display","inline")
+    //     video.play();
+    // })
+    // $(".pauseBtn").on("click",function(){
+    //     $(this).css("display","none")
+    //     $(".playBtn").css("display","inline")
+    //     video.pause()
+    // })
+
+    $(".playPauseBtn").on("click",function(){
+        if(video.paused){
+            video.play()
+        }else{
+            video.pause()
+        }
+    })
+
+    // video.addEventListener("play",function(){
+    //     $(".playPauseBtn").removeClass("fa-play").addClass("fa-pause");
+    // })
+    // video.addEventListener("pause",function(){
+    //     $(".playPauseBtn").removeClass("fa-pause").addClass("fa-play");
+    // })
+
+    // video.addEventListener("play pause",function(){
+    //     alert("gg")
+    // })//不行
+
+    $(video).on("play pause",function(){
+        $(".playPauseBtn").toggleClass("fa-play fa-pause")
+    })
+
+    $(".expandBtn").on("click",function(){
+        video.requestFullscreen();
+    })
+
+    function DurationFormat(num){
+        let obj = {}
+        obj.second = Math.floor(num%60)
+        obj.minute = Math.floor(num/60)
+        obj.hour = Math.floor(obj.minute/60)
+        for (const key in obj) {
+            if (obj[key] < 10) {
+                obj[key] = "0" + obj[key]
+            }else if(obj[key] >= 60){
+                obj[key] = Math.floor(obj[key] % 60)
+            }
+        }
+        return obj.hour+":"+obj.minute+":"+obj.second
+    }
+
+    video.oncanplay = function(){
+        $(".totalTime").html(DurationFormat(video.duration))
+
+        // setInterval(() => {
+        //     $(".currentTime").html(DurationFormat(video.currentTime))
+        //
+        //     let elapseWidth = video.currentTime/video.duration*100
+        //     $(".elapse").css("width",elapseWidth+"%")
+        // }, 500);
+    }
+    $(".bar").on("click",function(e){
+        // console.log(e.pageX)
+        // console.log(Math.floor($(this).offset().left));
+        // let current = e.pageX - Math.floor($(this).offset().left)
+        let current = Math.floor(e.offsetX)
+        let total = Math.ceil($(this).width())
+        //currentTime	设置或返回视频中的当前播放位置（以秒计）
+        video.currentTime = current/total*video.duration
+        video.play();
+    })
+    //使用ontimeupdate事件代替setInterval
+    video.ontimeupdate = function () {
+        $(".currentTime").html(DurationFormat(video.currentTime))
+
+        let elapseWidth = video.currentTime/video.duration*100
+        $(".elapse").css("width",elapseWidth+"%")
+    }
+    video.onended = function () {
+        this.currentTime = 0
+        video.pause()
+    }
+})
+</script>
+</body>
+</html>

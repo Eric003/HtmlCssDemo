@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>切割轮播图</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .banner{
+            width: 500px;
+            height: 300px;
+            /*background-color: #cccccc;*/
+            margin: 200px auto;
+            position: relative;
+        }
+        ul{
+            list-style: none;
+            background-color: cadetblue;
+            width: 100%;
+            height: 100%;
+            /*transform: rotate3d(1,1,0,-30deg);*/
+            /*transform-style: preserve-3d;*/
+            display: flex;
+        }
+        ul>li{
+            flex: 1;
+            background-color: darkseagreen;
+            position: relative;
+            /*transform:rotate3d(1,0,0,0deg);*/
+            transform-style: preserve-3d;
+            transition: transform 0.4s;
+        }
+        ul>li>span{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: skyblue;
+            color: #ffffff;
+        }
+        ul>li>span:nth-child(1){
+            /*background-color: darkgoldenrod;*/
+            transform: translateZ(150px);
+            background-image: url("image/L1.jpg");
+            background-size: cover;
+        }
+        ul>li>span:nth-child(2){
+            /*background-color: darkolivegreen;*/
+            transform: translateY(-150px) rotateX(90deg);
+            background-image: url("image/L2.jpg");
+            background-size: cover;
+        }
+        ul>li>span:nth-child(3){
+            background-image: url("image/L3.jpg");
+            background-size: cover;
+            background-color: #9400ff;
+            transform: translateZ(-150px) rotateX(180deg);
+        }
+        ul>li>span:nth-child(4){
+            background-image: url("image/L4.jpg");
+            background-size: cover;
+            transform: translateY(150px) rotateX(-90deg);
+        }
+        ul>li:nth-child(2)>span{
+            background-position: -100px;
+        }
+        ul>li:nth-child(3)>span{
+            background-position: -200px;
+        }
+        ul>li:nth-child(4)>span{
+            background-position: -300px;
+        }
+        ul>li:nth-child(5)>span{
+            background-position: -400px;
+        }
+        .banner>span{
+            position: absolute;
+            color: #ffffff;
+            top: 50%;
+            transform: translate(0,-50%);
+            font-size: 46px;
+            background-color: rgba(0,0,0,.5);
+            cursor: pointer;
+        }
+        .banner>span[id="next"]{
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="banner">
+    <ul>
+        <li>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </li>
+        <li>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </li>
+        <li>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </li>
+        <li>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </li>
+        <li>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </li>
+    </ul>
+    <span id="pre">&lt;</span>
+    <span id="next">&gt;</span>
+</div>
+<script src="jquery-3.4.1.js"></script>
+<script>
+    $(function(){
+        let times = 0
+        let flag = true
+        $("#pre").on("click",function () {
+            if (flag){
+                ++times
+                flag = false
+                $($("ul>li").toArray().reverse()).each(function (index,elem) {
+                    $(this).css({
+                        "transform":"rotateX("+times*90+"deg)",
+                        "transition-delay":index*0.1+"s"
+                    })
+                })
+                setTimeout(()=>{flag=true},600)
+            }
+        })
+        $("#next").on("click",function () {
+            if (flag){
+                --times
+                flag = false
+                $("ul>li").each(function (index,elem) {
+                    $(this).css({
+                        "transform":"rotateX("+times*90+"deg)",
+                        "transition-delay":index*0.1+"s"
+                    })
+                })
+                setTimeout(()=>{flag=true},600)
+            }
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>water waves</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .box{
+            width: 200px;
+            height: 200px;
+            margin: 100px auto;
+        }
+        .ball{
+            width:100%;
+            height: 100%;
+            border: 1px solid #555;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 200px;
+            /* color: #fff; */
+            position: relative;
+            overflow: hidden;
+        }
+        .wave{
+            background-color: rgba(23, 126, 243, 0.4);
+            width: 600px;
+            height: 590px;
+            border-radius: 40%;
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%,0);
+            animation: wave 8s linear infinite backwards;
+        }
+        .wave2{
+            animation-delay: -.4s;
+        }
+        .wave3{
+            animation: waveBack 8s linear infinite backwards;
+            animation-delay: -1.1s;
+        }
+        .wave4{
+            animation: waveBack 8s linear infinite backwards;
+            animation-delay: -1.4s;
+        }
+        @keyframes wave{
+            form{
+                transform: translate(-50%,0) rotate(0);
+            }
+            to{
+                transform: translate(-50%,0) rotate(360deg);
+            }
+        }
+        @keyframes waveBack{
+            form{
+                transform: translate(-50%,0) rotate(0);
+            }
+            to{
+                transform: translate(-50%,0) rotate(-360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="ball">水波效果
+            <div class="wave wave1"></div>
+            <div class="wave wave2"></div>
+            <div class="wave wave3"></div>
+            <div class="wave wave4"></div>
+        </div>
+    </div>
+</body>
+</html>
